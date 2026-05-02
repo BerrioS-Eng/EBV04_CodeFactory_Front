@@ -21,8 +21,10 @@ export function getCurrentUser(token: string): Promise<AuthUser> {
     return apiFetch<AuthUser>("/api/users/me", { token, cache: "no-store" });
 }
 
-export function listTechnologies(): Promise<Technology[]> {
-    return apiFetch<Technology[]>("/api/technologies", {
-        next: { revalidate: 3600 },
-    });
+export async function listTechnologies(): Promise<Technology[]> {
+    const raw = await apiFetch<Array<{ id: string | number; name: string }>>(
+        "/api/technologies",
+        { next: { revalidate: 3600 } },
+    );
+    return raw.map((t) => ({ id: String(t.id), name: t.name }));
 }
