@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FiArrowLeft, FiCalendar, FiCode, FiUsers } from "react-icons/fi";
-import { ApiError } from "@/lib/api/client";
+import { tryOr, tryOrNull } from "@/lib/api/safe";
 import { listTechnologies } from "@/lib/auth/api";
 import { requireSession } from "@/lib/auth/session";
-import type { Technology } from "@/lib/auth/types";
 import { getProject, listApplicationsForProject } from "@/lib/projects/api";
 import type { Application, Project } from "@/lib/projects/types";
 import { makeTechnologyName } from "@/lib/technologies/utils";
@@ -23,15 +22,17 @@ export default async function ProjectDetailPage({
     const { id } = await params;
     const { user, token } = await requireSession();
 
-    const project = await loadProject(id, token);
+    const project = await tryOrNull(getProject(id, token));
     if (!project) notFound();
 
     const isOwner = user.id === project.creatorId;
     const isCollaborator = project.collaborators.some((c) => c.id === user.id);
 
     const [applications, technologies] = await Promise.all([
-        isOwner ? loadApplications(project.id, token) : Promise.resolve<Application[]>([]),
-        loadTechnologies(),
+        isOwner
+            ? tryOr(listApplicationsForProject(project.id, token), [])
+            : Promise.resolve<Application[]>([]),
+        tryOr(listTechnologies(), []),
     ]);
     const technologyName = makeTechnologyName(technologies);
     const pendingCount = applications.filter((a) => a.status === "pending").length;
@@ -46,7 +47,7 @@ export default async function ProjectDetailPage({
                 >
                     <FiArrowLeft size={20} />
                 </Link>
-                <h2 className="line-clamp-1 flex-1 text-lg font-semibold">{project.title}</h2>
+                <h2 className="line-clamp-1 flex-1 text-xl font-semibold text-brand">{project.title}</h2>
                 <ProjectStatusBadge status={project.status} />
             </header>
 
@@ -182,31 +183,6 @@ function DiscussionsPanel({ canSee }: { canSee: boolean }) {
             </p>
         </div>
     );
-}
-
-async function loadProject(id: string, token: string): Promise<Project | null> {
-    try {
-        return await getProject(id, token);
-    } catch (error) {
-        if (error instanceof ApiError && (error.status === 404 || error.status === 403)) return null;
-        throw error;
-    }
-}
-
-async function loadApplications(projectId: number | string, token: string): Promise<Application[]> {
-    try {
-        return await listApplicationsForProject(projectId, token);
-    } catch {
-        return [];
-    }
-}
-
-async function loadTechnologies(): Promise<Technology[]> {
-    try {
-        return await listTechnologies();
-    } catch {
-        return [];
-    }
 }
 
 function formatDate(iso: string): string {

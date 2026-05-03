@@ -11,6 +11,7 @@ export function listProjects(
     if (filters.technologyIds?.length) search.set("technologyIds", filters.technologyIds.join(","));
     if (filters.page != null) search.set("page", String(filters.page));
     if (filters.size != null) search.set("size", String(filters.size));
+    if (filters.userId != null) search.set("userId", String(filters.userId));
     const qs = search.toString();
     return apiFetch<PaginatedProjects>(`/api/projects${qs ? `?${qs}` : ""}`, {
         token,

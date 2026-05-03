@@ -32,7 +32,7 @@ export default function DashboardHeader({
 
                 <nav className="flex items-center gap-3">
                     <IconLink
-                        href="/notifications"
+                        href="/dashboard/notifications"
                         label="Notificaciones"
                         icon={<FiBell size={20} className="text-foreground/70" />}
                         dot={hasUnreadNotifications}

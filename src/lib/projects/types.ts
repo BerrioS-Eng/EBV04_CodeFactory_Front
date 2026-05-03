@@ -35,6 +35,7 @@ export interface ProjectFilters {
     technologyIds?: string[];
     page?: number;
     size?: number;
+    userId?: number;
 }
 
 export interface PaginatedProjects {

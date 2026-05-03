@@ -91,7 +91,7 @@ export default function ProjectExplorer({ initialProjects, technologies }: Proje
                         )}
                     </button>
                     <Link
-                        href="/projects/new"
+                        href="/dashboard/projects/new"
                         className="flex items-center gap-2 rounded-lg bg-brand px-6 py-3 font-medium text-background transition-all hover:brightness-110"
                         style={{ fontFamily: "var(--font-mono)" }}
                     >

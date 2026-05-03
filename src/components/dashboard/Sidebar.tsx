@@ -18,11 +18,11 @@ import { ELEVATED_ROLES, hasRole, type AuthUser } from "@/lib/auth/types";
 
 type IconType = ComponentType<{ className?: string; size?: number }>;
 
-type MenuItem = { icon: IconType; label: string; path: string };
+type MenuItem = { icon: IconType; label: string; path: string; exact?: boolean };
 
 const MENU_ITEMS: MenuItem[] = [
-    { icon: FiHome, label: "Dashboard", path: "/dashboard" },
-    { icon: FiFolder, label: "Mis Proyectos", path: "/my-projects" },
+    { icon: FiHome, label: "Dashboard", path: "/dashboard", exact: true },
+    { icon: FiFolder, label: "Mis Proyectos", path: "/dashboard/projects", exact: true },
     { icon: FiMessageCircle, label: "Mensajes", path: "/messages" },
     { icon: FiUser, label: "Perfil", path: "/profile" },
 ];
@@ -92,10 +92,10 @@ export default function Sidebar({ user }: { user: AuthUser }) {
 function NavSection({ items, pathname }: { items: MenuItem[]; pathname: string }) {
     return (
         <ul className="space-y-1">
-            {items.map(({ icon: Icon, label, path }) => {
-                const active =
-                    pathname === path ||
-                    (path !== "/dashboard" && pathname.startsWith(path + "/"));
+            {items.map(({ icon: Icon, label, path, exact }) => {
+                const active = exact
+                    ? pathname === path
+                    : pathname === path || pathname.startsWith(path + "/");
                 return (
                     <li key={path}>
                         <Link

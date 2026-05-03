@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/api/client";
 import { requireSession } from "@/lib/auth/session";
 import type { ActionState } from "@/lib/auth/types";
@@ -8,6 +9,7 @@ import {
     acceptApplication,
     applyToProject,
     completeProject,
+    createProject,
     publishProject,
     rejectApplication,
     startDevelopment,
@@ -98,4 +100,35 @@ export async function rejectApplicationAction(
     } catch (error) {
         return fail(error);
     }
+}
+
+export async function createProjectAction(
+    _state: ActionState,
+    formData: FormData,
+): Promise<ActionState> {
+    const { token } = await requireSession();
+
+    const title = (formData.get("title") ?? "").toString().trim();
+    const description = (formData.get("description") ?? "").toString().trim();
+    const stackRequired = formData.getAll("stack").map(String).filter(Boolean);
+    const intent = formData.get("intent")?.toString();
+    const status: "draft" | "seeking_collaborators" =
+        intent === "publish" ? "seeking_collaborators" : "draft";
+
+    const fieldErrors: Record<string, string> = {};
+    if (!title) fieldErrors.title = "El título es obligatorio";
+    if (status === "seeking_collaborators") {
+        if (!description) fieldErrors.description = "La descripción es obligatoria para publicar";
+        if (stackRequired.length === 0) fieldErrors.stack = "Selecciona al menos una tecnología para publicar";
+    }
+    if (Object.keys(fieldErrors).length) return { ok: false, fieldErrors };
+
+    let project;
+    try {
+        project = await createProject({ title, description, stackRequired, status }, token);
+    } catch (error) {
+        return fail(error);
+    }
+    revalidatePath("/dashboard");
+    redirect(`/dashboard/projects/${project.id}`);
 }

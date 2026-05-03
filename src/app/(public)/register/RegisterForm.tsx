@@ -7,6 +7,7 @@ import GridBackground from "@/components/GridBackground";
 import { registerAction } from "@/lib/auth/actions";
 import { PASSWORD_RULES } from "@/lib/auth/validation";
 import type { Technology } from "@/lib/auth/types";
+import { FormField } from "@/components/ui/form-field";
 import { CiLock } from "react-icons/ci";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { FiEye, FiEyeOff, FiX } from "react-icons/fi";
@@ -49,11 +50,11 @@ export default function RegisterForm({ technologies }: { technologies: Technolog
 
                         <form action={action} className="space-y-4" noValidate>
                             <div className="grid md:grid-cols-2 gap-4">
-                                <Field label="Nombre completo" error={errors?.name}>
+                                <FormField label="Nombre completo" error={errors?.name}>
                                     <Input name="name" type="text" autoComplete="name" placeholder="Tu nombre" />
-                                </Field>
+                                </FormField>
 
-                                <Field label="Correo electrónico" error={errors?.email}>
+                                <FormField label="Correo electrónico" error={errors?.email}>
                                     <IconInput
                                         name="email"
                                         type="email"
@@ -61,9 +62,9 @@ export default function RegisterForm({ technologies }: { technologies: Technolog
                                         placeholder="tu@email.com"
                                         icon={<MdMailOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />}
                                     />
-                                </Field>
+                                </FormField>
 
-                                <Field
+                                <FormField
                                     label="Contraseña"
                                     error={errors?.password}
                                     hint={errors?.password ? undefined : PASSWORD_RULES}
@@ -74,16 +75,16 @@ export default function RegisterForm({ technologies }: { technologies: Technolog
                                         visible={showPassword}
                                         onToggle={() => setShowPassword((v) => !v)}
                                     />
-                                </Field>
+                                </FormField>
 
-                                <Field label="Confirmar contraseña" error={errors?.confirmPassword}>
+                                <FormField label="Confirmar contraseña" error={errors?.confirmPassword}>
                                     <PasswordInput
                                         name="confirmPassword"
                                         autoComplete="new-password"
                                         visible={showPassword}
                                         onToggle={() => setShowPassword((v) => !v)}
                                     />
-                                </Field>
+                                </FormField>
                             </div>
 
                             <div>
@@ -161,30 +162,6 @@ export default function RegisterForm({ technologies }: { technologies: Technolog
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-function Field({
-    label,
-    error,
-    hint,
-    children,
-}: {
-    label: string;
-    error?: string;
-    hint?: string;
-    children: React.ReactNode;
-}) {
-    return (
-        <div>
-            <label className="block text-lg mb-2 text-foreground/80">{label}</label>
-            {children}
-            {error ? (
-                <p className="mt-1 text-sm text-destructive">{error}</p>
-            ) : hint ? (
-                <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
-            ) : null}
         </div>
     );
 }

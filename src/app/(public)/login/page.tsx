@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Brand } from '@/app/page';
 import GridBackground from '@/components/GridBackground';
 import { loginAction } from '@/lib/auth/actions';
+import { FormField } from '@/components/ui/form-field';
 import { CiLock } from 'react-icons/ci';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -42,7 +43,7 @@ export default function Login() {
                         </p>
 
                         <form action={action} className="space-y-4" noValidate>
-                            <Field label="Correo electrónico" error={errors?.email}>
+                            <FormField label="Correo electrónico" error={errors?.email}>
                                 <div className="relative group">
                                     <MdMailOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
                                     <input
@@ -54,9 +55,9 @@ export default function Login() {
                                         required
                                     />
                                 </div>
-                            </Field>
+                            </FormField>
 
-                            <Field label="Contraseña" error={errors?.password}>
+                            <FormField label="Contraseña" error={errors?.password}>
                                 <div className="relative group">
                                     <CiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
                                     <input
@@ -69,7 +70,7 @@ export default function Login() {
                                     />
                                     <PasswordToggle visible={showPassword} onToggle={() => setShowPassword((v) => !v)} />
                                 </div>
-                            </Field>
+                            </FormField>
 
                             <div className="flex items-center justify-between text-sm">
                                 <Link href="/recovery" className="text-primary hover:text-primary/80 transition-colors">
@@ -107,16 +108,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-    return (
-        <div>
-            <label className="block text-lg mb-2 text-foreground/80">{label}</label>
-            {children}
-            {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </div>
     );
 }
