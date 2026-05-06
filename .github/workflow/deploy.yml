@@ -3,10 +3,12 @@ name: Build, Test and Deploy
 on:
   push:
     branches:
+      - build
       - main
       - develop
   pull_request:
     branches:
+      - build
       - main
       - develop
 
