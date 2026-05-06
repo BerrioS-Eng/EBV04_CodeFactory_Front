@@ -14,43 +14,49 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x, 22.x]
 
     steps:
       # 1. Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Configurar Node.js
+      # 2. Instalar pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # 3. Configurar Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
-      # 3. Instalar dependencias
+      # 4. Instalar dependencias
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      # 4. Linting
+      # 5. Linting
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm lint
 
-      # 5. Test unitarios
+      # 6. Test unitarios
       - name: Run unit tests
-        run: npm test -- --coverage
+        run: pnpm test -- --coverage
 
-      # 6. Upload coverage reports
+      # 7. Upload coverage reports
       - name: Upload coverage to Codecov
-        if: matrix.node-version == '20.x' 
+        if: matrix.node-version == '20.x'
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage/coverage-final.json
           fail_ci_if_error: false
 
-      # 7. Build
+      # 8. Build
       - name: Build Next.js project
-        run: npm run build
+        run: pnpm build
 
       # 8. Deploy a Vercel (solo en push a main)
       - name: Deploy to Vercel
