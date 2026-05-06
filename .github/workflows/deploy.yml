@@ -44,7 +44,7 @@ jobs:
 
       # 6. Test unitarios
       - name: Run unit tests
-        run: pnpm test -- --coverage
+        run: pnpm test --coverage
 
       # 7. Upload coverage reports
       - name: Upload coverage to Codecov
