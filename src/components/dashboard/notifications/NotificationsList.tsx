@@ -207,7 +207,7 @@ function NotificationItem({
                 }`}
             >
                 <div
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
                         notification.read ? "bg-muted/50" : "bg-primary/10"
                     }`}
                 >
@@ -223,7 +223,7 @@ function NotificationItem({
                         >
                             {notification.title}
                         </h4>
-                        <span className="flex-shrink-0 text-xs text-muted-foreground">
+                        <span className="shrink-0 text-xs text-muted-foreground">
                             {relativeTime(notification.createdAt)}
                         </span>
                     </div>
@@ -240,7 +240,7 @@ function NotificationItem({
                         disabled={pending}
                         title="Marcar como leída"
                         aria-label="Marcar como leída"
-                        className="flex-shrink-0 rounded-md p-2 opacity-0 transition-opacity hover:bg-accent group-hover:opacity-100 disabled:opacity-50"
+                        className="shrink-0 rounded-md p-2 opacity-0 transition-opacity hover:bg-accent group-hover:opacity-100 disabled:opacity-50"
                     >
                         <FiCheck size={16} className="text-primary" />
                     </button>
