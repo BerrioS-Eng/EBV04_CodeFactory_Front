@@ -42,7 +42,7 @@ jobs:
 
       # 6. Upload coverage reports
       - name: Upload coverage to Codecov
-        if: matrix.node-version = '20.x' 
+        if: matrix.node-version == '20.x' 
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage/coverage-final.json
@@ -54,8 +54,8 @@ jobs:
 
       # 8. Deploy a Vercel (solo en push a main)
       - name: Deploy to Vercel
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: vercel/action@v6
+        if: github.event_name == 'push' && github.ref == 'refs/heads/build'
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -65,7 +65,7 @@ jobs:
       # 9. Deploy preview (en pull requests)
       - name: Deploy Preview to Vercel
         if: github.event_name == 'pull_request'
-        uses: vercel/action@v6
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
