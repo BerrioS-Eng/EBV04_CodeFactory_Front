@@ -58,28 +58,33 @@ jobs:
       - name: Build Next.js project
         run: pnpm build
 
-      # 8. Deploy a Vercel (solo en push a main)
-      - name: Deploy to Vercel
-        if: github.event_name == 'push' && github.ref == 'refs/heads/build'
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          production: true
+      # 8. Deploy a Vercel (solo en push a build, una vez)
+      - name: Deploy to Vercel (production)
+        if: matrix.node-version == '20.x' && github.event_name == 'push' && github.ref == 'refs/heads/build'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel@latest build --prod --token="$VERCEL_TOKEN"
+          npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
 
       # 9. Deploy preview (en pull requests)
       - name: Deploy Preview to Vercel
-        if: github.event_name == 'pull_request'
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        if: matrix.node-version == '20.x' && github.event_name == 'pull_request'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          npx vercel@latest build --token="$VERCEL_TOKEN"
+          npx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN"
 
       # 10. Comentar el PR con los resultados
       - name: Comment PR with deployments info
-        if: github.event_name == 'pull_request'
+        if: matrix.node-version == '20.x' && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
