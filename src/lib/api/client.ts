@@ -20,7 +20,11 @@ interface RequestOptions extends Omit<RequestInit, "body" | "headers"> {
 
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const { body, token, headers, ...rest } = options;
-    const res = await fetch(`${BACKEND_URL}${path}`, {
+    const url = `${BACKEND_URL}${path}`;
+    
+    console.log("[apiFetch] →", url, rest.method ?? "GET");
+    
+    const res = await fetch(url, {
         ...rest,
         headers: {
             "Content-Type": "application/json",
@@ -32,15 +36,15 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
     });
 
     const text = await res.text();
+    console.log("[apiFetch] ←", res.status, text.slice(0, 300));
+    
     const data = text ? safeJson(text) : null;
-
     if (!res.ok) {
         const message = isErrorBody(data) ? data.message : undefined;
         throw new ApiError(res.status, data, message);
     }
     return data as T;
 }
-
 function safeJson(text: string): unknown {
     try {
         return JSON.parse(text);
