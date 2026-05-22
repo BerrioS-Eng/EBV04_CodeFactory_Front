@@ -24,7 +24,7 @@ const MENU_ITEMS: MenuItem[] = [
     { icon: FiHome, label: "Dashboard", path: "/dashboard", exact: true },
     { icon: FiFolder, label: "Mis Proyectos", path: "/dashboard/projects", exact: true },
     { icon: FiMessageCircle, label: "Mensajes", path: "/messages" },
-    { icon: FiUser, label: "Perfil", path: "/profile" },
+    { icon: FiUser, label: "Perfil", path: "/dashboard/profile" },
 ];
 
 const ADMIN_ITEMS: MenuItem[] = [

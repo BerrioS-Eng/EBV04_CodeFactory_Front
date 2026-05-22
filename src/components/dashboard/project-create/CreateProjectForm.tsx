@@ -1,11 +1,12 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { FiCode, FiFileText, FiSave, FiSend, FiX } from "react-icons/fi";
+import { FiCode, FiFileText, FiSave, FiSend } from "react-icons/fi";
 import { toast } from "sonner";
 import { createProjectAction } from "@/lib/projects/actions";
 import type { ActionState, Technology } from "@/lib/auth/types";
 import { FormField } from "@/components/ui/form-field";
+import TechnologyPicker from "@/components/dashboard/TechnologyPicker";
 
 const TITLE_MAX = 100;
 const DESCRIPTION_MAX = 1000;
@@ -34,14 +35,8 @@ export default function CreateProjectForm({ technologies }: { technologies: Tech
     const canDraft = title.trim().length > 0;
     const canPublish = canDraft && description.trim().length > 0 && selectedTechs.length > 0;
 
-    const selectedTech = (id: string) => technologies.find((t) => t.id === id);
-
     return (
         <form action={formAction} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {selectedTechs.map((id) => (
-                <input key={id} type="hidden" name="stack" value={id} />
-            ))}
-
             <Intro />
 
             <FormField
@@ -80,77 +75,15 @@ export default function CreateProjectForm({ technologies }: { technologies: Tech
                 />
             </FormField>
 
-            <div>
-                <div className="mb-3 flex items-center gap-2">
-                    <FiCode className="h-4 w-4 text-primary" />
-                    <label className="text-xl text-foreground/80">
-                        Stack Técnico Requerido <span className="text-brand">*</span>
-                    </label>
-                    {selectedTechs.length > 0 && (
-                        <span className="text-xs text-muted-foreground">
-                            ({selectedTechs.length} seleccionadas)
-                        </span>
-                    )}
-                </div>
-
-                {selectedTechs.length > 0 && (
-                    <div className="mb-4 rounded-md border border-primary/20 bg-primary/5 p-3">
-                        <div className="flex flex-wrap gap-2">
-                            {selectedTechs.map((id) => {
-                                const tech = selectedTech(id);
-                                return (
-                                    <span
-                                        key={id}
-                                        className="flex items-center gap-2 rounded-md border border-brand/30 bg-brand/20 px-3 py-1.5 text-primary"
-                                    >
-                                        <span className="font-bold text-brand" style={{ fontFamily: "var(--font-mono)" }}>
-                                            {tech?.name ?? id}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={() => toggleTech(id)}
-                                            aria-label={`Quitar ${tech?.name ?? id}`}
-                                            className="rounded-sm p-0.5 transition-colors hover:bg-primary/30"
-                                        >
-                                            <FiX size={14} className="text-brand" />
-                                        </button>
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-
-                <div className="max-h-80 overflow-y-auto rounded-md border border-border bg-input-background p-4">
-                    {technologies.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">Catálogo de tecnologías no disponible.</p>
-                    ) : (
-                        <div className="flex flex-wrap gap-2">
-                            {technologies.map((tech) => {
-                                const active = selectedTechs.includes(tech.id);
-                                return (
-                                    <button
-                                        key={tech.id}
-                                        type="button"
-                                        onClick={() => toggleTech(tech.id)}
-                                        disabled={active}
-                                        aria-pressed={active}
-                                        className={`rounded-md border px-3 py-1.5 text-sm transition-all ${
-                                            active
-                                                ? "cursor-default border-sidebar-primary bg-sidebar-primary/20 text-sidebar-primary font-bold opacity-50"
-                                                : "border-border/50 bg-muted/30 text-foreground/70 hover:bg-muted"
-                                        }`}
-                                        style={{ fontFamily: "var(--font-mono)" }}
-                                    >
-                                        {tech.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-                {errors?.stack && <p className="mt-2 text-sm text-destructive">{errors.stack}</p>}
-            </div>
+            <TechnologyPicker
+                technologies={technologies}
+                selectedIds={selectedTechs}
+                onToggle={toggleTech}
+                inputName="stack"
+                label="Stack Técnico Requerido"
+                required
+                error={errors?.stack}
+            />
 
             <RequirementsBox />
 
