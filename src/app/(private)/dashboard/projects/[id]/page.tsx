@@ -13,6 +13,7 @@ import ProjectActions from "@/components/dashboard/project-detail/ProjectActions
 import ProjectStatusBadge from "@/components/dashboard/project-detail/ProjectStatusBadge";
 import ProjectTabs from "@/components/dashboard/project-detail/ProjectTabs";
 import TeamList from "@/components/dashboard/project-detail/TeamList";
+import UserConnectActions from "@/components/dashboard/UserConnectActions";
 
 export default async function ProjectDetailPage({
     params,
@@ -57,6 +58,7 @@ export default async function ProjectDetailPage({
                         project={project}
                         canApply={project.canApply && !isOwner && !isCollaborator}
                         isOwner={isOwner}
+                        currentUserId={user.id}
                         technologyName={technologyName}
                     />
 
@@ -82,7 +84,7 @@ export default async function ProjectDetailPage({
                             {
                                 key: "team",
                                 label: `Equipo (${project.collaborators.length})`,
-                                panel: <TeamList project={project} technologyName={technologyName} />,
+                                panel: <TeamList project={project} technologyName={technologyName} currentUserId={user.id} />,
                             },
                             {
                                 key: "discussions",
@@ -101,11 +103,13 @@ function ProjectSummary({
     project,
     canApply,
     isOwner,
+    currentUserId,
     technologyName,
 }: {
     project: Project;
     canApply: boolean;
     isOwner: boolean;
+    currentUserId: number;
     technologyName: (id: string) => string;
 }) {
     return (
@@ -128,10 +132,9 @@ function ProjectSummary({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-2">
-                            <FiUsers size={16} />
-                            Creado por {project.creator.name}
-                        </span>
+                        <div className="mt-4">
+                            <UserConnectActions userId={project.creatorId} currentUserId={currentUserId} />
+                        </div>
                         <span className="flex items-center gap-2">
                             <FiCalendar size={16} />
                             {formatDate(project.createdAt)}

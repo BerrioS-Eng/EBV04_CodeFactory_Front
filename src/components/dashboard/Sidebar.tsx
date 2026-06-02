@@ -23,7 +23,7 @@ type MenuItem = { icon: IconType; label: string; path: string; exact?: boolean }
 const MENU_ITEMS: MenuItem[] = [
     { icon: FiHome, label: "Dashboard", path: "/dashboard", exact: true },
     { icon: FiFolder, label: "Mis Proyectos", path: "/dashboard/projects", exact: true },
-    { icon: FiMessageCircle, label: "Mensajes", path: "/messages" },
+    { icon: FiMessageCircle, label: "Mensajes", path: "/dashboard/messages" },
     { icon: FiUser, label: "Perfil", path: "/dashboard/profile" },
 ];
 

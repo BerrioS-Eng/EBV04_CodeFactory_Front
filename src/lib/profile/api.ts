@@ -11,3 +11,7 @@ export function updateProfile(payload: UpdateProfilePayload, token: string): Pro
         body: payload,
     });
 }
+
+export function getPublicProfile(id: number | string, token: string): Promise<AuthUser> {
+    return apiFetch<AuthUser>(`/api/users/${id}`, { token, cache: "no-store" });
+}
