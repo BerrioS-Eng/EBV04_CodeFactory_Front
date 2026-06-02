@@ -23,7 +23,7 @@ export default function TechnologyChips({
             {ids.map((id) => (
                 <span
                     key={id}
-                    className="rounded-md border border-secondary/20 bg-secondary/10 px-3 py-1.5 text-secondary"
+                    className="rounded-md border border-brand/20 bg-secondary/10 px-3 py-1.5 text-brand"
                     style={{ fontFamily: "var(--font-mono)" }}
                 >
                     {nameOf(id)}

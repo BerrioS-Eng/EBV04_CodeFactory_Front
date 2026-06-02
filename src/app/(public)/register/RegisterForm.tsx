@@ -10,8 +10,9 @@ import type { Technology } from "@/lib/auth/types";
 import { FormField } from "@/components/ui/form-field";
 import { CiLock } from "react-icons/ci";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
-import { FiEye, FiEyeOff, FiX } from "react-icons/fi";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { MdMailOutline } from "react-icons/md";
+import TechnologyPicker from "@/components/dashboard/TechnologyPicker";
 
 export default function RegisterForm({ technologies }: { technologies: Technology[] }) {
     const [state, action, pending] = useActionState(registerAction, undefined);
@@ -87,50 +88,18 @@ export default function RegisterForm({ technologies }: { technologies: Technolog
                                 </FormField>
                             </div>
 
-                            <div>
-                                <div className="flex items-center gap-2 mb-3">
-                                    <label className="text-sm text-foreground/80">
-                                        Stack técnico <span className="text-primary">*</span>
-                                    </label>
-                                    {selectedTechs.length > 0 && (
-                                        <span className="text-xs text-muted-foreground">
-                                            ({selectedTechs.length} seleccionadas)
-                                        </span>
-                                    )}
-                                </div>
-                                {selectedTechs.map((id) => (
-                                    <input key={id} type="hidden" name="stack" value={id} />
-                                ))}
-                                {technologies.length === 0 ? (
-                                    <p className="text-sm text-muted-foreground p-4 bg-input-background border border-border rounded-md">
-                                        No fue posible cargar el catálogo de tecnologías. Intenta más tarde.
-                                    </p>
-                                ) : (
-                                    <div className="flex flex-wrap gap-2 p-4 bg-input-background border border-border rounded-md max-h-64 overflow-y-auto">
-                                        {technologies.map((tech) => {
-                                            const active = selectedTechs.includes(tech.id);
-                                            return (
-                                                <button
-                                                    key={tech.id}
-                                                    type="button"
-                                                    onClick={() => toggleTech(tech.id)}
-                                                    aria-pressed={active}
-                                                    className={`px-3 py-1.5 rounded-md text-sm transition-transform duration-150 hover:scale-105 active:scale-95 flex items-center gap-2 border ${
-                                                        active
-                                                            ? "bg-primary/20 text-primary border-primary"
-                                                            : "bg-muted/30 text-foreground/70 hover:bg-muted border-border/50"
-                                                    }`}
-                                                    style={{ fontFamily: "var(--font-mono)" }}
-                                                >
-                                                    <span>{tech.name}</span>
-                                                    {active && <FiX size={14} />}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                                {errors?.stack && <p className="mt-1 text-sm text-destructive">{errors.stack}</p>}
-                            </div>
+                            <TechnologyPicker
+                                technologies={technologies}
+                                selectedIds={selectedTechs}
+                                onToggle={toggleTech}
+                                inputName="stack"
+                                label="Stack técnico"
+                                required
+                                showIcon={false}
+                                error={errors?.stack}
+                                emptyMessage="No fue posible cargar el catálogo de tecnologías. Intenta más tarde."
+                                variant="toggle"
+                            />
 
                             {message && (
                                 <p className="text-sm text-destructive" role="alert">{message}</p>

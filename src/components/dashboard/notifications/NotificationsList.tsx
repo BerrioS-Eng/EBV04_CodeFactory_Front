@@ -92,7 +92,7 @@ export default function NotificationsList({
                         </div>
                         <div>
                             <h2 className="text-xl font-semibold leading-none">Notificaciones</h2>
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="text-lg text-muted-foreground">
                                 {unreadCount > 0 ? `${unreadCount} sin leer` : "Todo al día"}
                             </p>
                         </div>
@@ -103,7 +103,7 @@ export default function NotificationsList({
                             type="button"
                             onClick={handleMarkAll}
                             disabled={pending}
-                            className="flex items-center gap-2 rounded-md px-4 py-2 text-lg text-secondary transition-colors hover:bg-accent hover:text-secondary/80 disabled:opacity-50"
+                            className="flex items-center gap-2 rounded-md px-4 py-2 text-lg text-primary transition-colors hover:bg-brand/20 disabled:opacity-50"
                         >
                             <FiCheckCircle size={16} />
                             <span>Marcar todas como leídas</span>
@@ -163,11 +163,10 @@ function FilterTab({
             role="tab"
             aria-selected={active}
             onClick={onClick}
-            className={`rounded-md px-4 py-2 transition-colors ${
-                active
+            className={`rounded-md px-4 py-2 transition-colors ${active
                     ? "border border-brand bg-brand/20 text-brand"
                     : "border border-transparent text-foreground/70 hover:bg-accent"
-            }`}
+                }`}
         >
             {label}
         </button>
@@ -200,16 +199,14 @@ function NotificationItem({
                         onSelect(notification);
                     }
                 }}
-                className={`group flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors ${
-                    notification.read
+                className={`group flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors ${notification.read
                         ? "border-border bg-card hover:border-primary/30"
-                        : "border-primary/20 bg-primary/5 hover:border-primary/40"
-                }`}
+                        : "border-brand/40 bg-primary/5 hover:border-primary/40"
+                    }`}
             >
                 <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                        notification.read ? "bg-muted/50" : "bg-primary/10"
-                    }`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${notification.read ? "bg-muted/50" : "bg-primary/10"
+                        }`}
                 >
                     <Icon size={20} className={color} />
                 </div>
@@ -217,9 +214,8 @@ function NotificationItem({
                 <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-start justify-between gap-4">
                         <h4
-                            className={`font-medium ${
-                                notification.read ? "text-foreground/80" : "text-foreground"
-                            }`}
+                            className={`font-medium ${notification.read ? "text-foreground/80" : "text-foreground"
+                                }`}
                         >
                             {notification.title}
                         </h4>

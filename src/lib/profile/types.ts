@@ -1,11 +1,11 @@
 import type { AuthUser } from "@/lib/auth/types";
 
 export interface UpdateProfilePayload {
-    fullName: string;
+    name: string;
     bio: string | null;
     githubUrl: string | null;
     gitlabUrl: string | null;
-    technologyIds: number[];
+    stack: string[];
 }
 
 export const BIO_MAX = 500;

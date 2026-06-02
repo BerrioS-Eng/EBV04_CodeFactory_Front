@@ -1,17 +1,14 @@
 import Link from "next/link";
 import { FiBell, FiMessageCircle, FiUser } from "react-icons/fi";
-import type { AuthUser } from "@/lib/auth/types";
 
 export interface DashboardHeaderProps {
     title: string;
-    user: AuthUser;
     badge?: string;
     hasUnreadNotifications?: boolean;
 }
 
 export default function DashboardHeader({
     title,
-    user,
     badge,
     hasUnreadNotifications = false,
 }: DashboardHeaderProps) {
@@ -42,16 +39,7 @@ export default function DashboardHeader({
                         label="Mensajes"
                         icon={<FiMessageCircle size={20} className="text-foreground/70" />}
                     />
-                    <div className="h-6 w-px bg-border" />
-                    <Link
-                        href="/profile"
-                        className="flex items-center gap-2 rounded-md px-3 py-1.5 transition-colors hover:bg-accent"
-                    >
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20">
-                            <FiUser size={16} className="text-primary" />
-                        </div>
-                        <span className="text-sm">{user.name}</span>
-                    </Link>
+                    
                 </nav>
             </div>
         </header>
@@ -73,7 +61,7 @@ function IconLink({
         <Link
             href={href}
             aria-label={label}
-            className="relative rounded-md p-2 transition-colors hover:bg-accent"
+            className="relative rounded-md p-2 transition-colors hover:bg-brand"
         >
             {icon}
             {dot && <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />}

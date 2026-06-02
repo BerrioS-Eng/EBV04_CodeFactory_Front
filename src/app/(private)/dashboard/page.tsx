@@ -6,7 +6,7 @@ import { requireSession } from "@/lib/auth/session";
 import { listProjects } from "@/lib/projects/api";
 
 export default async function DashboardPage() {
-    const { user, token } = await requireSession();
+    const { token } = await requireSession();
 
     const [projectsPage, technologies] = await Promise.all([
         tryOr(listProjects({ size: 50 }, token), null),
@@ -19,7 +19,6 @@ export default async function DashboardPage() {
             <DashboardHeader
                 title="Explorar Proyectos"
                 badge={`${projects.length} proyectos`}
-                user={user}
             />
             <div className="flex-1 overflow-y-auto">
                 <ProjectExplorer initialProjects={projects} technologies={technologies} />

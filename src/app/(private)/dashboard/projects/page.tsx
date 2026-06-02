@@ -23,9 +23,9 @@ export default async function Page() {
     return (
         <main className="flex-1 flex flex-col">
             <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-                <div className="h-full px-6 flex items-center justify-between max-w-7xl mx-auto w-full">
+                <div className="flex h-full items-center justify-between px-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center border border-brand">
+                        <div className="w-10 h-10 bg-brand/20 rounded-lg flex items-center justify-center">
                             <LuFolderKanban className="w-5 h-5 text-brand font-bold" />
                         </div>
                         <div>

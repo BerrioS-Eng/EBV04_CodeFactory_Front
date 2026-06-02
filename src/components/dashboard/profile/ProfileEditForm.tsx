@@ -124,7 +124,7 @@ export default function ProfileEditForm({
                     technologies={technologies}
                     selectedIds={selectedTechs}
                     onToggle={toggleTech}
-                    inputName="technologyIds"
+                    inputName="stack"
                     label="Stack Técnico"
                 />
             </section>

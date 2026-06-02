@@ -21,11 +21,11 @@ export default function ProfileView({ user, technologies }: ProfileViewProps) {
                 <div className="flex h-full items-center justify-between px-6">
                     <div className="flex items-center gap-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20">
-                            <FiUser className="h-5 w-5 text-primary" />
+                            <FiUser className="h-5 w-5 text-brand" />
                         </div>
                         <div>
                             <h2 className="text-lg font-semibold">Mi Perfil</h2>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-ls text-muted-foreground">
                                 Gestiona tu información personal
                             </p>
                         </div>
