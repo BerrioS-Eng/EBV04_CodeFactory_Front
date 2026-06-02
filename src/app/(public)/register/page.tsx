@@ -2,6 +2,8 @@ import { tryOr } from "@/lib/api/safe";
 import { listTechnologies } from "@/lib/auth/api";
 import RegisterForm from "./RegisterForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function RegisterPage() {
     const technologies = await tryOr(listTechnologies(), []);
 
