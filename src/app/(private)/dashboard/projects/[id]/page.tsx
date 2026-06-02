@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FiArrowLeft, FiCalendar, FiCode, FiUsers } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiCode } from "react-icons/fi";
 import { tryOr, tryOrNull } from "@/lib/api/safe";
 import { listTechnologies } from "@/lib/auth/api";
 import { requireSession } from "@/lib/auth/session";

@@ -22,7 +22,9 @@ export function ChatWorkspace({
     initialConversationId = null,
 }: Props) {
     const [conversations] = useState(initialConversations);
-    const [active, setActive] = useState<Conversation | null>(null);
+    const [active, setActive] = useState<Conversation | null>(
+        () => initialConversations.find((c) => c.id === initialConversationId) ?? null,
+    );
     const [messages, setMessages] = useState<ChatMessage[]>([]);
 
     const onIncoming = useCallback(
@@ -41,17 +43,22 @@ export function ChatWorkspace({
 
     const { connected, sendMessage } = useChatSocket(token, onIncoming);
 
-    const selectConversation = useCallback(async (c: Conversation) => {
+    const selectConversation = useCallback((c: Conversation) => {
         setActive(c);
-        const history = await fetchMessages(c.id); // viene desc → invertir a asc
-        setMessages([...history].reverse());
     }, []);
 
+    // Carga el historial cada vez que cambia la conversación activa.
     useEffect(() => {
-        if (initialConversationId == null) return;
-        const target = conversations.find((c) => c.id === initialConversationId);
-        if (target) void selectConversation(target);
-    }, [initialConversationId, conversations, selectConversation]);
+        if (!active) return;
+        let cancelled = false;
+        fetchMessages(active.id).then((history) => {
+            // viene desc → invertir a asc
+            if (!cancelled) setMessages([...history].reverse());
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [active]);
 
     const handleSend = (content: string, type: MessageType, language?: string) => {
         if (!active) return;
