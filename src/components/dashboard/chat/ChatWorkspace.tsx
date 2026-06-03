@@ -68,7 +68,7 @@ export function ChatWorkspace({
     };
 
     return (
-        <div className="flex h-[calc(100vh-8rem)] border rounded-lg overflow-hidden">
+        <div className="flex h-[calc(100vh-9rem)] border rounded-lg overflow-hidden">
             <ConversationList
                 conversations={conversations}
                 activeId={active?.id ?? null}
@@ -77,9 +77,9 @@ export function ChatWorkspace({
             <div className="flex-1 flex flex-col">
                 {active ? (
                     <>
-                        <div className="border-b px-4 py-3 flex items-center justify-between">
-                            <span className="font-medium">{active.otherUser.fullName}</span>
-                            <span className={`text-xs ${connected ? "text-green-600" : "text-muted-foreground"}`}>
+                        <div className="border-b px-5 py-4 flex items-center justify-between">
+                            <span className="text-lg font-medium">{active.otherUser.fullName}</span>
+                            <span className={`text-sm ${connected ? "text-green-600" : "text-muted-foreground"}`}>
                                 {connected ? "● en línea" : "○ conectando…"}
                             </span>
                         </div>
@@ -87,7 +87,7 @@ export function ChatWorkspace({
                         <MessageComposer disabled={!connected} onSend={handleSend} />
                     </>
                 ) : (
-                    <div className="flex-1 grid place-items-center text-muted-foreground">
+                    <div className="flex-1 grid place-items-center text-lg text-muted-foreground">
                         Selecciona una conversación
                     </div>
                 )}

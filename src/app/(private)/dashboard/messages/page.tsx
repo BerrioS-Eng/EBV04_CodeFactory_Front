@@ -13,7 +13,7 @@ export default async function MessagesPage({
 
     return (
         <div className="p-6">
-            <h1 className="mb-4 text-2xl font-semibold">Mensajes</h1>
+            <h1 className="mb-5 text-3xl font-semibold">Mensajes</h1>
             <ChatWorkspace
                 token={session.token}
                 currentUserId={session.user.id}

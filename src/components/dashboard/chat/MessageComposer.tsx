@@ -48,7 +48,7 @@ export function MessageComposer({ disabled, onSend }: Props) {
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
                         placeholder="lenguaje (ej: java)"
-                        className="h-8 w-40"
+                        className="h-9 w-44"
                     />
                 )}
             </div>
@@ -59,7 +59,7 @@ export function MessageComposer({ disabled, onSend }: Props) {
                     onKeyDown={onKeyDown}
                     placeholder={codeMode ? "Pega tu fragmento de código…" : "Escribe un mensaje…"}
                     rows={codeMode ? 5 : 1}
-                    className={codeMode ? "font-mono text-sm" : ""}
+                    className={codeMode ? "font-mono text-sm" : "text-base"}
                     disabled={disabled}
                 />
                 <Button onClick={submit} disabled={disabled || !content.trim()} size="icon">
