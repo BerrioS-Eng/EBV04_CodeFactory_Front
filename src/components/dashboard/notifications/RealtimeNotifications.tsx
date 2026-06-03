@@ -20,7 +20,10 @@ interface IncomingNotification {
 export default function RealtimeNotifications({ token }: { token: string }) {
     const router = useRouter();
     const routerRef = useRef(router);
-    routerRef.current = router;
+
+    useEffect(() => {
+        routerRef.current = router;
+    });
 
     useEffect(() => {
         const client = new Client({

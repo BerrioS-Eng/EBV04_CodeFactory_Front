@@ -3,13 +3,11 @@ import MyProjects from "@/components/dashboard/my-projects/MyProjects";
 import { tryOr } from "@/lib/api/safe";
 import { listTechnologies } from "@/lib/auth/api";
 import { requireSession } from "@/lib/auth/session";
-import { listCollaborating, listMyDrafts, listMyProjects, listProjects } from "@/lib/projects/api";
+import { listCollaborating, listMyDrafts, listMyProjects } from "@/lib/projects/api";
 import { Button } from "@base-ui/react";
 import Link from "next/link";
 import { FiPlus } from "react-icons/fi";
 import { LuFolderKanban } from "react-icons/lu";
-
-type TabType = 'created' | 'collaborating' | 'drafts';
 
 export default async function Page() {
     const { user, token } = await requireSession();

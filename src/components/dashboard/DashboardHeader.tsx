@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiBell, FiMessageCircle, FiUser } from "react-icons/fi";
+import { FiBell, FiMessageCircle } from "react-icons/fi";
 
 export interface DashboardHeaderProps {
     title: string;
