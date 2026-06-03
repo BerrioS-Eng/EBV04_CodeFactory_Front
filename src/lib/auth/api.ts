@@ -14,7 +14,15 @@ export function loginRequest(payload: LoginPayload): Promise<AuthResponse> {
 }
 
 export function registerRequest(payload: RegisterPayload): Promise<AuthResponse> {
-    return apiFetch<AuthResponse>("/api/auth/register", { method: "POST", body: payload });
+    return apiFetch<AuthResponse>("/api/auth/register", {
+        method: "POST",
+        body: {
+            fullName: payload.name,
+            email: payload.email,
+            password: payload.password,
+            technologyIds: payload.stack.map(Number),
+        },
+    });
 }
 
 export function getCurrentUser(token: string): Promise<AuthUser> {

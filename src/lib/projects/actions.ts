@@ -125,7 +125,13 @@ export async function createProjectAction(
 
     let project;
     try {
-        project = await createProject({ title, description, stackRequired, status }, token);
+        project = await createProject(
+            { title, description, technologyIds: stackRequired.map(Number) },
+            token,
+        );
+        if (status === "seeking_collaborators") {
+            project = await publishProject(project.id, token); // PUT /publish
+        }
     } catch (error) {
         return fail(error);
     }

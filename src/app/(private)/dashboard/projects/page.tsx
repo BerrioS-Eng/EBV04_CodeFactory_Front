@@ -3,7 +3,7 @@ import MyProjects from "@/components/dashboard/my-projects/MyProjects";
 import { tryOr } from "@/lib/api/safe";
 import { listTechnologies } from "@/lib/auth/api";
 import { requireSession } from "@/lib/auth/session";
-import { listProjects } from "@/lib/projects/api";
+import { listCollaborating, listMyDrafts, listMyProjects, listProjects } from "@/lib/projects/api";
 import { Button } from "@base-ui/react";
 import Link from "next/link";
 import { FiPlus } from "react-icons/fi";
@@ -14,11 +14,14 @@ type TabType = 'created' | 'collaborating' | 'drafts';
 export default async function Page() {
     const { user, token } = await requireSession();
 
-    const [projectPage, technologies] = await Promise.all([
-        tryOr(listProjects({ size: 50, userId: user.id }, token), null),
+    const [mine, drafts, collaborating, technologies] = await Promise.all([
+        tryOr(listMyProjects(token), []),
+        tryOr(listMyDrafts(token), []),
+        tryOr(listCollaborating(token), []),
         tryOr(listTechnologies(), []),
     ]);
-
+    const projects = [...mine, ...drafts, ...collaborating];
+    
 
     return (
         <main className="flex-1 flex flex-col">
@@ -36,18 +39,18 @@ export default async function Page() {
 
                     <Button className="font-mono gap-2">
                         <Link
-                        href="/dashboard/projects/new"
-                        className="flex items-center gap-2 rounded-lg bg-brand px-6 py-3 font-medium text-background transition-all hover:brightness-110"
-                        style={{ fontFamily: "var(--font-mono)" }}
-                    >
-                        <FiPlus size={20} />
-                        <span>NUEVO</span>
-                    </Link>
+                            href="/dashboard/projects/new"
+                            className="flex items-center gap-2 rounded-lg bg-brand px-6 py-3 font-medium text-background transition-all hover:brightness-110"
+                            style={{ fontFamily: "var(--font-mono)" }}
+                        >
+                            <FiPlus size={20} />
+                            <span>NUEVO</span>
+                        </Link>
                     </Button>
                 </div>
             </header>
             <MyProjects
-                initialProjects={projectPage?.content || []}
+                initialProjects={projects || []}
                 user={user}
                 technologies={technologies}
             />

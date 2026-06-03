@@ -26,8 +26,7 @@ export function getProject(id: number | string, token?: string | null): Promise<
 export interface CreateProjectPayload {
     title: string;
     description: string;
-    stackRequired: string[];
-    status: "draft" | "seeking_collaborators";
+    technologyIds: number[];
 }
 
 export function createProject(payload: CreateProjectPayload, token: string): Promise<Project> {
@@ -91,4 +90,16 @@ export function startDevelopment(projectId: number | string, token: string): Pro
 
 export function completeProject(projectId: number | string, token: string): Promise<Project> {
     return apiFetch<Project>(`/api/projects/${projectId}/complete`, { method: "POST", token });
+}
+
+export async function listMyProjects(token: string): Promise<Project[]> {
+    const res = await apiFetch<{ content: Project[] }>("/api/projects/my?size=100", { token, cache: "no-store" });
+    return res.content;
+}
+export async function listMyDrafts(token: string): Promise<Project[]> {
+    const res = await apiFetch<{ content: Project[] }>("/api/projects/my/drafts?size=100", { token, cache: "no-store" });
+    return res.content;
+}
+export function listCollaborating(token: string): Promise<Project[]> {
+    return apiFetch<Project[]>("/api/projects/my/collaborating", { token, cache: "no-store" });
 }

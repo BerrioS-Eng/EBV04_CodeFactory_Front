@@ -27,7 +27,11 @@ export default function ProfileEditForm({
     const [bio, setBio] = useState(user.bio ?? "");
     const [githubUrl, setGithubUrl] = useState(user.githubUrl ?? "");
     const [gitlabUrl, setGitlabUrl] = useState(user.gitlabUrl ?? "");
-    const [selectedTechs, setSelectedTechs] = useState<string[]>(user.stack);
+    const idByName = new Map(technologies.map((t) => [t.name, t.id] as const));
+    const [selectedTechs, setSelectedTechs] = useState<string[]>(
+        // si viene un nombre lo paso a id; si ya es id, lo dejo
+        user.stack.map((s) => idByName.get(s) ?? s),
+    );
 
     const errors = state && !state.ok ? state.fieldErrors : undefined;
     const message = state && !state.ok ? state.message : undefined;

@@ -8,7 +8,13 @@ export function updateProfile(payload: UpdateProfilePayload, token: string): Pro
     return apiFetch<AuthUser>("/api/users/me", {
         method: "PUT",
         token,
-        body: payload,
+        body: {
+            fullName: payload.name,
+            bio: payload.bio,
+            githubUrl: payload.githubUrl,
+            gitlabUrl: payload.gitlabUrl,
+            technologyIds: payload.stack.map(Number),
+        },
     });
 }
 
