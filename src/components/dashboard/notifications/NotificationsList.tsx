@@ -7,10 +7,14 @@ import {
     FiBell,
     FiCheck,
     FiCheckCircle,
+    FiMail,
+    FiMessageCircle,
+    FiMessageSquare,
     FiPlay,
     FiSend,
     FiUser,
     FiUsers,
+    FiUserX,
 } from "react-icons/fi";
 import { toast } from "sonner";
 import {
@@ -29,6 +33,10 @@ const ICONS: Record<NotificationType, IconType> = {
     project_published: FiSend,
     project_started: FiPlay,
     profile_updated: FiUser,
+    application_withdrawn: FiUserX,
+    new_comment: FiMessageSquare,
+    new_message: FiMail,
+    new_discussion: FiMessageCircle,
 };
 
 const COLORS: Record<NotificationType, string> = {
@@ -38,6 +46,10 @@ const COLORS: Record<NotificationType, string> = {
     project_published: "text-secondary",
     project_started: "text-secondary",
     profile_updated: "text-primary",
+    application_withdrawn: "text-primary",
+    new_comment: "text-secondary",
+    new_message: "text-brand",
+    new_discussion: "text-primary",
 };
 
 type Filter = "all" | "unread";
@@ -164,8 +176,8 @@ function FilterTab({
             aria-selected={active}
             onClick={onClick}
             className={`rounded-md px-4 py-2 transition-colors ${active
-                    ? "border border-brand bg-brand/20 text-brand"
-                    : "border border-transparent text-foreground/70 hover:bg-accent"
+                ? "border border-brand bg-brand/20 text-brand"
+                : "border border-transparent text-foreground/70 hover:bg-accent"
                 }`}
         >
             {label}
@@ -200,8 +212,8 @@ function NotificationItem({
                     }
                 }}
                 className={`group flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors ${notification.read
-                        ? "border-border bg-card hover:border-primary/30"
-                        : "border-brand/40 bg-primary/5 hover:border-primary/40"
+                    ? "border-border bg-card hover:border-primary/30"
+                    : "border-brand/40 bg-primary/5 hover:border-primary/40"
                     }`}
             >
                 <div
@@ -224,6 +236,18 @@ function NotificationItem({
                         </span>
                     </div>
                     <p className="text-sm text-muted-foreground">{notification.message}</p>
+                    {notification.link && (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onSelect(notification); // marca como leída y navega a n.link
+                            }}
+                            className="mt-2 inline-flex items-center gap-1 rounded-md border border-border px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-accent"
+                        >
+                            Detalle
+                        </button>
+                    )}
                 </div>
 
                 {!notification.read && (

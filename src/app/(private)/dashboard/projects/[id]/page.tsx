@@ -17,10 +17,13 @@ import UserConnectActions from "@/components/dashboard/UserConnectActions";
 
 export default async function ProjectDetailPage({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams: Promise<{ tab?: string }>;
 }) {
     const { id } = await params;
+    const { tab } = await searchParams;
     const { user, token } = await requireSession();
 
     const project = await tryOrNull(getProject(id, token));
@@ -63,6 +66,7 @@ export default async function ProjectDetailPage({
                     />
 
                     <ProjectTabs
+                        initialKey={tab}
                         tabs={[
                             {
                                 key: "overview",

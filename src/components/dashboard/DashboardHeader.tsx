@@ -35,7 +35,7 @@ export default function DashboardHeader({
                         dot={hasUnreadNotifications}
                     />
                     <IconLink
-                        href="/messages"
+                        href="/dashboard/messages"
                         label="Mensajes"
                         icon={<FiMessageCircle size={20} className="text-foreground/70" />}
                     />

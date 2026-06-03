@@ -5,6 +5,10 @@ export const NOTIFICATION_TYPES = [
     "project_published",
     "project_started",
     "profile_updated",
+    "application_withdrawn",
+    "new_comment",
+    "new_message",
+    "new_discussion",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 

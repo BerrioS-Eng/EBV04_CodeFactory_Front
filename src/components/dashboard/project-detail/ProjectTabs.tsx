@@ -9,9 +9,16 @@ export interface TabDefinition {
     visible?: boolean;
 }
 
-export default function ProjectTabs({ tabs }: { tabs: TabDefinition[] }) {
+export default function ProjectTabs({
+    tabs,
+    initialKey,
+}: {
+    tabs: TabDefinition[];
+    initialKey?: string;
+}) {
     const visible = tabs.filter((t) => t.visible !== false);
-    const [active, setActive] = useState(visible[0]?.key);
+    const initial = visible.find((t) => t.key === initialKey)?.key ?? visible[0]?.key;
+    const [active, setActive] = useState(initial);
     const current = visible.find((t) => t.key === active) ?? visible[0];
 
     return (
