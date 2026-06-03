@@ -44,7 +44,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - run: pnpm build
 
-  deploy:
+    deploy:
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -56,32 +56,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.x   # alinea con el runtime de Vercel
+          node-version: 24.x          # ← alinea con el Project Setting de Vercel
 
       - name: Deploy to Vercel (production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/build'
         run: |
-          npx vercel@39 pull --yes --environment=production --token="$VERCEL_TOKEN"
-          npx vercel@39 build --prod --token="$VERCEL_TOKEN"
-          npx vercel@39 deploy --prebuilt --prod --token="$VERCEL_TOKEN"
-
-      - name: Deploy Preview to Vercel
-        id: preview
-        if: github.event_name == 'pull_request'
-        run: |
-          npx vercel@39 pull --yes --environment=preview --token="$VERCEL_TOKEN"
-          npx vercel@39 build --token="$VERCEL_TOKEN"
-          url=$(npx vercel@39 deploy --prebuilt --token="$VERCEL_TOKEN")
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-
-      - name: Comment PR with preview URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `✅ Preview listo: ${{ steps.preview.outputs.url }}`
-            })
+          npx vercel@54 pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel@54 build --prod --token="$VERCEL_TOKEN"
+          npx vercel@54 deploy --prebuilt --prod --token="$VERCEL_TOKEN"
