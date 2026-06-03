@@ -2,89 +2,80 @@ name: Build, Test and Deploy
 
 on:
   push:
-    branches:
-      - build
+    branches: [build]
   pull_request:
-    branches:
-      - build
+    branches: [build]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
-  test-and-build:
+  test:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
         node-version: [20.x, 22.x]
-
     steps:
-      # 1. Checkout del código
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # 2. Instalar pnpm
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
-
-      # 3. Configurar Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      # 4. Instalar dependencias
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # 5. Linting
-      - name: Run ESLint
-        run: pnpm lint
-
-      # 6. Test unitarios
-      - name: Run unit tests
-        run: pnpm test --coverage
-
-      # 7. Upload coverage reports
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm type-check
+      - run: pnpm test --coverage
       - name: Upload coverage to Codecov
-        if: matrix.node-version == '20.x'
-        uses: codecov/codecov-action@v3
+        if: matrix.node-version == '22.x'
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage/coverage-final.json
           fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - run: pnpm build
 
-      # 8. Build
-      - name: Build Next.js project
-        run: pnpm build
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x   # alinea con el runtime de Vercel
 
-      # 8. Deploy a Vercel (solo en push a build, una vez)
       - name: Deploy to Vercel (production)
-        if: matrix.node-version == '20.x' && github.event_name == 'push' && github.ref == 'refs/heads/build'
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/build'
         run: |
-          npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
-          npx vercel@latest build --prod --token="$VERCEL_TOKEN"
-          npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          npx vercel@39 pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel@39 build --prod --token="$VERCEL_TOKEN"
+          npx vercel@39 deploy --prebuilt --prod --token="$VERCEL_TOKEN"
 
-      # 9. Deploy preview (en pull requests)
       - name: Deploy Preview to Vercel
-        if: matrix.node-version == '20.x' && github.event_name == 'pull_request'
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        id: preview
+        if: github.event_name == 'pull_request'
         run: |
-          npx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
-          npx vercel@latest build --token="$VERCEL_TOKEN"
-          npx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN"
+          npx vercel@39 pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          npx vercel@39 build --token="$VERCEL_TOKEN"
+          url=$(npx vercel@39 deploy --prebuilt --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
 
-      # 10. Comentar el PR con los resultados
-      - name: Comment PR with deployments info
-        if: matrix.node-version == '20.x' && github.event_name == 'pull_request'
+      - name: Comment PR with preview URL
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -92,5 +83,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Build successful! Preview deployment ready.'
+              body: `✅ Preview listo: ${{ steps.preview.outputs.url }}`
             })
